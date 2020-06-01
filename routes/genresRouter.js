@@ -23,7 +23,7 @@ genresRouter.route('/')
 
   Genres.create(req.body)
   .then((genres) => {
-    res.statusCode = 200;
+    res.statusCode = 201;
     res.send(genres);
   }, (err) => console.log(err))
   .catch((err) => console.log(err));
