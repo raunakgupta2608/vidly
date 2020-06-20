@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-const Genres = require('../models/genres');
+const {Genres, validate} = require('../models/genres');
 
 const genresRouter = express.Router();
 genresRouter.use(bodyParser.json());
@@ -18,7 +18,7 @@ genresRouter.route('/')
   .catch((err) => console.log(err));
 })
 .post((req, res) => {
-  const { error } = validateGenre(req.body); 
+  const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
   Genres.create(req.body)
@@ -53,7 +53,7 @@ genresRouter.route('/:id')
   res.status(400).send('POST operation not supported on /api/genres/:id');
 })
 .put((req, res) => {
-  const { error } = validateGenre(req.body); 
+  const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
   Genres.findByIdAndUpdate(req.params.id , { name: req.body.name }, { new: true })
@@ -75,13 +75,5 @@ genresRouter.route('/:id')
   }, (err) => console.log(err))
   .catch((err) => console.log(err));
 });
-
-function validateGenre(genre) {
-  const schema = {
-    name: Joi.string().min(3).required()
-  };
-
-  return Joi.validate(genre, schema);
-}
 
 module.exports = genresRouter;
